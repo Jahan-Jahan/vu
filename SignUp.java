@@ -140,7 +140,7 @@ public class SignUp extends JFrame implements ActionListener {
         mainLabel.add(submit);
 
         setTitle("Sign Up");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setSize(1920, 900);
         add(mainLabel);
@@ -176,7 +176,8 @@ public class SignUp extends JFrame implements ActionListener {
                 }
 
                 if (st.isValidUsername() && st.isValidFirstName() && st.isValidLastName() && st.isValidEmail() && st.isValidId() && st.isValidPhone() && st.isValidPassword()) {
-                    new StudentHome();
+                    dispose();
+                    new StudentHome(st);
                 } else {
                     JOptionPane.showMessageDialog(null, "Please enter the valid information", "Validation", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -198,7 +199,8 @@ public class SignUp extends JFrame implements ActionListener {
                 }
 
                 if (tc.isValidUsername() && tc.isValidFirstName() && tc.isValidLastName() && tc.isValidEmail() && tc.isValidId() && tc.isValidPhone() && tc.isValidPassword()) {
-                    new TeacherHome();
+                    dispose();
+                    new TeacherHome(tc);
                 } else {
                     JOptionPane.showMessageDialog(null, "Please enter the valid information", "Validation", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -221,7 +223,8 @@ public class SignUp extends JFrame implements ActionListener {
                 }
 
                 if (em.isValidUsername() && em.isValidFirstName() && em.isValidLastName() && em.isValidEmail() && em.isValidId() && em.isValidPhone() && em.isValidPassword()) {
-                    new EmployeeHome();
+                    dispose();
+                    new EmployeeHome(em);
                 } else {
                     JOptionPane.showMessageDialog(null, "Please enter the valid information", "Validation", JOptionPane.INFORMATION_MESSAGE);
                 }

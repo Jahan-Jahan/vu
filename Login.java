@@ -6,6 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Login extends JFrame implements ActionListener, MouseListener {
+
+    Student student = new Student();
+    Teacher teacher = new Teacher();
+    Employee employee = new Employee();
     
     private ImageIcon background = new ImageIcon("back3.png");
     private JLabel welcome = new JLabel("Welcome dear user!");
@@ -90,7 +94,7 @@ public class Login extends JFrame implements ActionListener, MouseListener {
         mainLabel.add(submit);
 
         setTitle("Login");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
         setSize(1920, 900);
         add(mainLabel);
@@ -124,16 +128,20 @@ public class Login extends JFrame implements ActionListener, MouseListener {
                     options[0]);
                 
                 if (response == 0) {
-                    if (role == "std") new StudentHome();
-                    else if (role == "tc") new TeacherHome();
-                    else new EmployeeHome();
+                    if (role == "std") {
+                        new StudentHome(student);
+                    } else if (role == "tc") {
+                        new TeacherHome(teacher);
+                    } else {
+                        new EmployeeHome(employee);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null,
                     "Good luck!",
                     "By By",
                     JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
                 }
+                dispose();
 
             } else {
                 JOptionPane.showMessageDialog(null, "Username or Password is not valid!", "Validation", JOptionPane.INFORMATION_MESSAGE);
@@ -150,14 +158,10 @@ public class Login extends JFrame implements ActionListener, MouseListener {
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-    }
+    public void mousePressed(MouseEvent e) { }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-    }
+    public void mouseReleased(MouseEvent e) { }
 
     @Override
     public void mouseEntered(MouseEvent e) {
@@ -183,6 +187,31 @@ public class Login extends JFrame implements ActionListener, MouseListener {
                 String storedRole = details[7];
 
                 if (storedUser.equals(user) && storedPass.equals(pass) && storedRole.equals(r)) {
+                    if (r == "std") {
+                        student.setUsername(details[0]);
+                        student.setFirstName(details[1]);
+                        student.setLastName(details[2]);
+                        student.setEmail(details[3]);
+                        student.setId(details[4]);
+                        student.setPhoneNumber(details[5]);
+                        student.setPassword(details[6]);
+                    } else if (r == "tc") {
+                        teacher.setUsername(details[0]);
+                        teacher.setFirstName(details[1]);
+                        teacher.setLastName(details[2]);
+                        teacher.setEmail(details[3]);
+                        teacher.setId(details[4]);
+                        teacher.setPhoneNumber(details[5]);
+                        teacher.setPassword(details[6]);
+                    } else {
+                        employee.setUsername(details[0]);
+                        employee.setFirstName(details[1]);
+                        employee.setLastName(details[2]);
+                        employee.setEmail(details[3]);
+                        employee.setId(details[4]);
+                        employee.setPhoneNumber(details[5]);
+                        employee.setPassword(details[6]);
+                    }
                     return true;
                 }
             }

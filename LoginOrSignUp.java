@@ -1,7 +1,7 @@
 import javax.swing.JOptionPane;
 
 public class LoginOrSignUp {
-    
+
     public LoginOrSignUp() {
         String[] options = {"Sign Up", "Log In"};
 

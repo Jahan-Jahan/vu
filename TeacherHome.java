@@ -1,7 +1,6 @@
 import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,11 +17,14 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     private JLabel homeWorkLabel = new JLabel();
     private JLabel quizTextLabel = new JLabel("All quiz I created:");
     private JLabel quizLabel = new JLabel();
+
     private JLabel usernameLabel;
+    private JLabel comboLabel = new JLabel();
+    private JComboBox<String> usernameComboBox;
 
     private JButton changeRole = new JButton("Change!");
 
-    private Font font2 = new Font("MV Boli", Font.BOLD, 25);
+    private Font font2 = new Font("MV Boli", Font.BOLD, 22);
     private Color foreColor = new Color(80, 80, 80);
     private Color greenBtnColor = new Color(80, 200, 120);
     private Color borderColor = new Color(0, 100, 255);
@@ -39,11 +41,23 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     private JButton submit = new JButton("Submit");
 
     private ArrayList<String> studentsWeShowing = new ArrayList<String>();
+    private HashMap<String, ArrayList<String>> map = new HashMap<>();
     private int h = 0;
+    private int unknownCount = 1;
     
     public TeacherHome(Teacher t) {
 
         teacher = new Teacher(t.getUsername(), t.getFirstName(), t.getLastName(), t.getEmail(), t.getTeachId(), t.getPhoneNumber(), t.getPassword());
+
+        String[] comboBoxOptions = {"Add text", "Add quiz", "Add homework", "Log out"};
+        usernameComboBox = new JComboBox<String>(comboBoxOptions);
+        usernameComboBox.setBounds(50, 25, 180, 25);
+        usernameComboBox.setFont(new Font("MV Boli", Font.BOLD, 16));
+        usernameComboBox.setForeground(foreColor);
+
+        comboLabel.setBounds(1225, 25, 280, 75);
+        comboLabel.addMouseListener(this);
+        comboLabel.add(usernameComboBox);
 
         whatIsUp.setBounds(70, 120, 230, 40);
         whatIsUp.setFont(font2);
@@ -98,21 +112,22 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         addStudentBtn.setFocusable(false);
         addStudentBtn.addActionListener(this);
 
-        studentId.setBounds(150, 50, 200, 40);
+        studentId.setBounds(130, 50, 200, 40);
         studentId.setFont(font2);
-        studentLabel.setBounds(50, 50, 100, 40);
+        studentLabel.setBounds(30, 50, 100, 40);
         studentLabel.setFont(font2);
-        lessonToAdd.setBounds(150, 100, 200, 40);
+        lessonToAdd.setBounds(130, 100, 200, 40);
         lessonToAdd.setFont(font2);
-        lessonLabel.setBounds(50, 100, 100, 40);
+        lessonLabel.setBounds(30, 100, 100, 40);
         lessonLabel.setFont(font2);
-        submit.setBounds(150, 150, 120, 40);
+        submit.setBounds(140, 150, 120, 40);
         submit.setFont(font2);
         submit.setBackground(greenBtnColor);
         submit.setFocusable(false);
         submit.addActionListener(this);
         
         showStudent();
+        revalidate();
 
         mainLabelAdd.setBounds(0, 0, 400, 250);
         mainLabelAdd.setBackground(new Color(0, 50, 200));
@@ -135,6 +150,7 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         mainLabel.add(homeWorkLabel);
         mainLabel.add(quizLabel);
         mainLabel.add(usernameLabel);
+        mainLabel.add(comboLabel);
         mainLabel.add(changeRole);
         mainLabel.add(addStudentBtn);
 
@@ -142,7 +158,7 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1980, 900);
         add(mainLabel);
-
+        
         setVisible(true);
     }
 
@@ -158,14 +174,22 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
 
         if (e.getSource() == submit) {
             // Read text fields
-            addStudent();
+            addStudentAndTeacher();
             showStudent();
+            newsLabel.validate();
+            studentId.setText("");
+            lessonToAdd.setText("");
             addStudentToLesson.dispose();
         }
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) { }
+    public void mouseClicked(MouseEvent e) {
+        if (e.getSource() == comboLabel) {
+            mainLabel.remove(usernameLabel);
+            mainLabel.revalidate();
+        }
+    }
 
     @Override
     public void mousePressed(MouseEvent e) { }
@@ -200,6 +224,10 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
 
     @Override
     public void mouseExited(MouseEvent e) {
+        if (e.getSource() == comboLabel) {
+            mainLabel.add(usernameLabel);
+            mainLabel.revalidate();
+        }
         // if (e.getSource() == newsLabel) {
         //     newsLabel.setBorder(null);
 
@@ -214,34 +242,94 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         // }
     }
 
-    public void addStudent() {
+    public void addStudentAndTeacher() {
         String id = studentId.getText();
+        
         String lesson = lessonToAdd.getText();
 
-        try (FileWriter fw = new FileWriter("studentsOf" + teacher.getUsername() + ".csv", true);
-            PrintWriter pw = new PrintWriter(fw)) {
+        String stringToWrite = id + "," + lesson;
 
-            pw.println(id + "," + lesson);
-            JOptionPane.showMessageDialog(this, "Student has added successfully!");
+        String fileName = "studentsOf" + teacher.getUsername() + ".csv";
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error saving user details.");
+        File file = new File(fileName);
+
+        ArrayList<String> teacherInfoWeHave = new ArrayList<String>();
+
+        if (file.exists()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    String[] details = line.split(",");
+                    teacherInfoWeHave.add(details[0] + "," + details[1]);
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
 
-        for (String st : studentsWeShowing) {
+        if (!teacherInfoWeHave.contains(id + "," + lesson)) {
+            try (FileWriter fw = new FileWriter("studentsOf" + teacher.getUsername() + ".csv", true);
+                PrintWriter pw = new PrintWriter(fw)) {
 
-            String[] studentAndLesson = st.split("-");
-
-            try (FileWriter fw = new FileWriter("teachersOf" + findUsernameById(studentAndLesson[0]) + ".csv", true);
-            PrintWriter pw = new PrintWriter(fw)) {
-
-                pw.println(teacher.getUsername() + "," + studentAndLesson[1]);
-                // JOptionPane.showMessageDialog(this, "Teacher has added successfully!");
+                pw.println(stringToWrite);
+                JOptionPane.showMessageDialog(this, "Student has added successfully!");
 
             } catch (IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error saving user details.");
+            }
+        }
+
+        for (String st : map.keySet()) {
+
+            // System.out.println(st);
+
+            // String[] studentAndLesson = st.split(",");
+
+            // ArrayList<String> allTeacherAndLesson = new ArrayList<String>();
+
+            String readerFileName = "teachersOf" + findUsernameById(st) + ".csv";
+
+            file = new File(readerFileName);
+            
+            boolean s = true;
+
+            if (file.exists()) {
+                try (BufferedReader br = new BufferedReader(new FileReader(readerFileName))) {
+
+                    String line;
+
+                    while ((line = br.readLine()) != null) {
+                        
+                        String[] details = line.split(",");
+                        // System.out.println(findUsernameById(st.split(",")[0]));
+                        // System.out.println(details[0] + "  " + details[1]);
+
+                        if ((teacher.getUsername() + "," + lesson).equals(details[0] + "," + details[1])) {
+                            s = false;
+                            break;
+                        }
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            if (s) {
+                try (FileWriter fw = new FileWriter(readerFileName);
+                    PrintWriter pw = new PrintWriter(fw)) {
+
+                    for (String lessonOfMap : map.get(st)) {
+                        pw.println(teacher.getUsername() + "," + lessonOfMap);
+                    }
+                    // JOptionPane.showMessageDialog(this, "Teacher has added successfully!");
+
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Error saving user details.");
+                }
             }
         }
         
@@ -251,15 +339,25 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         String fileName = "studentsOf" + teacher.getUsername() + ".csv";
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
             String line;
+
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
                 String id = details[0];
                 String less = details[1];
                 String username = findUsernameById(id);
-                String stringToShow = username + "-" + less;
-                if (studentsWeShowing.contains(id + "-" + less) == false) {
-                    studentsWeShowing.add(id + "-" + less);
+                String stringToShow = username + "," + less;
+                
+                if (studentsWeShowing.contains(id + "," + less) == false) {
+                    studentsWeShowing.add(id + "," + less);
+                    if (map.containsKey(id)) {
+                        map.get(id).add(less);
+                    } else {
+                        ArrayList<String> arrayListLesson = new ArrayList<String>();
+                        arrayListLesson.add(less);
+                        map.put(id, arrayListLesson);
+                    }
                     JLabel studentToShow = new JLabel(stringToShow);
                     studentToShow.setBounds(10, h + 10, 250, 25);
                     studentToShow.setForeground(foreColor);
@@ -274,6 +372,7 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     }
 
     public String findUsernameById(String id) {
+
         String username = "Unknown";
 
         try (BufferedReader br = new BufferedReader(new FileReader("users.csv"))) {
@@ -288,6 +387,8 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
+        if (username.equals("Unknown")) username += unknownCount++;
 
         return username;
     }

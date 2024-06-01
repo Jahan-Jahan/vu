@@ -19,8 +19,17 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     private JLabel quizLabel = new JLabel();
 
     private JLabel usernameLabel;
-    private JLabel comboLabel = new JLabel();
-    private JComboBox<String> usernameComboBox;
+    private JLabel userButtonLabel = new JLabel();
+    private JButton addTextBtn = new JButton("Add Text");
+    private JButton addHomeworkBtn = new JButton("Add Homework");
+    private JButton addQuizBtn = new JButton("Add Quiz");
+    private JButton logOutBtn = new JButton("Log out");
+    private Font font3 = new Font("MV Boli", Font.BOLD, 13);
+
+    private JFrame textAreaNewsFrame = new JFrame("Add Text");
+    private JTextArea textAreaNews = new JTextArea(10, 30);
+    private JButton textAreaSubmitBtnNews = new JButton("Submit");
+    private Font font4 = new Font("MV Boli", Font.BOLD, 20);
 
     private JButton changeRole = new JButton("Change!");
 
@@ -49,15 +58,53 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
 
         teacher = new Teacher(t.getUsername(), t.getFirstName(), t.getLastName(), t.getEmail(), t.getTeachId(), t.getPhoneNumber(), t.getPassword());
 
-        String[] comboBoxOptions = {"Add text", "Add quiz", "Add homework", "Log out"};
-        usernameComboBox = new JComboBox<String>(comboBoxOptions);
-        usernameComboBox.setBounds(50, 25, 180, 25);
-        usernameComboBox.setFont(new Font("MV Boli", Font.BOLD, 16));
-        usernameComboBox.setForeground(foreColor);
+        addTextBtn.setBounds(10, 0, 130, 30);
+        addTextBtn.setBackground(greenBtnColor);
+        addTextBtn.setForeground(foreColor);
+        addTextBtn.setFont(font3);
+        addTextBtn.addActionListener(this);
+        
+        textAreaNewsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        textAreaNewsFrame.setSize(400, 300);
+        textAreaNewsFrame.setLocationRelativeTo(null);
 
-        comboLabel.setBounds(1225, 25, 280, 75);
-        comboLabel.addMouseListener(this);
-        comboLabel.add(usernameComboBox);
+        textAreaNews.setLineWrap(true);
+        textAreaNews.setWrapStyleWord(true);
+        textAreaNews.setFont(font4);
+
+        textAreaSubmitBtnNews.setBackground(greenBtnColor);
+        textAreaSubmitBtnNews.setForeground(foreColor);
+        textAreaSubmitBtnNews.setFont(font4);
+        textAreaSubmitBtnNews.addActionListener(this);
+
+        textAreaNewsFrame.getContentPane().add(new JScrollPane(textAreaNews), BorderLayout.CENTER);
+        textAreaNewsFrame.getContentPane().add(textAreaSubmitBtnNews, BorderLayout.SOUTH);
+        
+        addHomeworkBtn.setBounds(140, 0, 130, 30);
+        addHomeworkBtn.setBackground(greenBtnColor);
+        addHomeworkBtn.setForeground(foreColor);
+        addHomeworkBtn.setFont(font3);
+        addHomeworkBtn.addActionListener(this);
+        
+        addQuizBtn.setBounds(10, 30, 130, 30);
+        addQuizBtn.setBackground(greenBtnColor);
+        addQuizBtn.setForeground(foreColor);
+        addQuizBtn.setFont(font3);
+        addQuizBtn.addActionListener(this);
+        
+        logOutBtn.setBounds(140, 30, 130, 30);
+        logOutBtn.setBackground(greenBtnColor);
+        logOutBtn.setForeground(foreColor);
+        logOutBtn.setFont(font3);
+        logOutBtn.addActionListener(this);
+
+        userButtonLabel.setBounds(1225, 25, 280, 80);
+        userButtonLabel.addMouseListener(this);
+        userButtonLabel.add(addTextBtn);
+        userButtonLabel.add(addHomeworkBtn);
+        userButtonLabel.add(addQuizBtn);
+        userButtonLabel.add(logOutBtn);
+        userButtonLabel.setVisible(false);
 
         whatIsUp.setBounds(70, 120, 230, 40);
         whatIsUp.setFont(font2);
@@ -96,17 +143,17 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         usernameLabel.setFont(font2);
         usernameLabel.setForeground(foreColor);
         usernameLabel.setBackground(greenBtnColor);
-        usernameLabel.setBounds(1225, 25, 280, 75);
+        usernameLabel.setBounds(1225, 25, 280, 80);
         usernameLabel.setOpaque(true);
         usernameLabel.addMouseListener(this);
         
-        changeRole.setBounds(25, 25, 150, 75);
+        changeRole.setBounds(25, 25, 150, 80);
         changeRole.setFont(font2);
         changeRole.setBackground(greenBtnColor);
         changeRole.setFocusable(false);
         changeRole.addActionListener(this);
 
-        addStudentBtn.setBounds(180, 25, 150, 75);
+        addStudentBtn.setBounds(180, 25, 150, 80);
         addStudentBtn.setFont(font2);
         addStudentBtn.setBackground(greenBtnColor);
         addStudentBtn.setFocusable(false);
@@ -150,7 +197,7 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         mainLabel.add(homeWorkLabel);
         mainLabel.add(quizLabel);
         mainLabel.add(usernameLabel);
-        mainLabel.add(comboLabel);
+        mainLabel.add(userButtonLabel);
         mainLabel.add(changeRole);
         mainLabel.add(addStudentBtn);
 
@@ -181,15 +228,42 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
             lessonToAdd.setText("");
             addStudentToLesson.dispose();
         }
+
+        if (e.getSource() == addTextBtn) {
+            textAreaNewsFrame.setVisible(true);
+        }
+        if (e.getSource() == textAreaSubmitBtnNews) {
+            String text = textAreaNews.getText();
+
+            String fileName = "text.csv";
+
+            try (FileWriter fw = new FileWriter(fileName, true);
+             PrintWriter pw = new PrintWriter(fw)) {
+                
+                pw.println(text);
+                
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            textAreaNews.setText("");
+
+            textAreaNewsFrame.dispose();
+        }
+
+        if (e.getSource() == logOutBtn) {
+            dispose();
+            int response = JOptionPane.showConfirmDialog(this, "Are you done?", "Exit?", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            } else if (response == JOptionPane.NO_OPTION) {
+                new Login();
+            }
+        }
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        if (e.getSource() == comboLabel) {
-            mainLabel.remove(usernameLabel);
-            mainLabel.revalidate();
-        }
-    }
+    public void mouseClicked(MouseEvent e) { }
 
     @Override
     public void mousePressed(MouseEvent e) { }
@@ -199,6 +273,10 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        if (e.getSource() == usernameLabel) {
+            usernameLabel.setVisible(false);
+            userButtonLabel.setVisible(true);
+        }
         if (e.getSource() == whatIsUp) {
             whatIsUp.setForeground(new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
         }
@@ -224,9 +302,9 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
 
     @Override
     public void mouseExited(MouseEvent e) {
-        if (e.getSource() == comboLabel) {
-            mainLabel.add(usernameLabel);
-            mainLabel.revalidate();
+        if (e.getSource() == userButtonLabel) {
+            usernameLabel.setVisible(true);
+            userButtonLabel.setVisible(false);
         }
         // if (e.getSource() == newsLabel) {
         //     newsLabel.setBorder(null);
@@ -336,38 +414,43 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     }
 
     public void showStudent() {
+
         String fileName = "studentsOf" + teacher.getUsername() + ".csv";
 
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        File file = new File(fileName);
 
-            String line;
+        if (file.exists()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
 
-            while ((line = br.readLine()) != null) {
-                String[] details = line.split(",");
-                String id = details[0];
-                String less = details[1];
-                String username = findUsernameById(id);
-                String stringToShow = username + "," + less;
-                
-                if (studentsWeShowing.contains(id + "," + less) == false) {
-                    studentsWeShowing.add(id + "," + less);
-                    if (map.containsKey(id)) {
-                        map.get(id).add(less);
-                    } else {
-                        ArrayList<String> arrayListLesson = new ArrayList<String>();
-                        arrayListLesson.add(less);
-                        map.put(id, arrayListLesson);
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    String[] details = line.split(",");
+                    String id = details[0];
+                    String less = details[1];
+                    String username = findUsernameById(id);
+                    String stringToShow = username + "," + less;
+                    
+                    if (studentsWeShowing.contains(id + "," + less) == false) {
+                        studentsWeShowing.add(id + "," + less);
+                        if (map.containsKey(id)) {
+                            map.get(id).add(less);
+                        } else {
+                            ArrayList<String> arrayListLesson = new ArrayList<String>();
+                            arrayListLesson.add(less);
+                            map.put(id, arrayListLesson);
+                        }
+                        JLabel studentToShow = new JLabel(stringToShow);
+                        studentToShow.setBounds(10, h + 10, 250, 25);
+                        studentToShow.setForeground(foreColor);
+                        studentToShow.setFont(new Font("MV Boli", Font.BOLD, 18));
+                        newsLabel.add(studentToShow);
+                        h += 35;
                     }
-                    JLabel studentToShow = new JLabel(stringToShow);
-                    studentToShow.setBounds(10, h + 10, 250, 25);
-                    studentToShow.setForeground(foreColor);
-                    studentToShow.setFont(new Font("MV Boli", Font.BOLD, 18));
-                    newsLabel.add(studentToShow);
-                    h += 35;
                 }
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 

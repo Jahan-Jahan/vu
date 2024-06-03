@@ -27,7 +27,7 @@ public class Teacher extends User {
     @Override
     public void setId(String id) {
         Pattern pattern = Pattern.compile("[0-9]{6}");
-        Matcher matcher = pattern.matcher(teachId);
+        Matcher matcher = pattern.matcher(id);
         if (matcher.find()) {
             this.teachId = id;
         }

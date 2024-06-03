@@ -164,18 +164,17 @@ public class SignUp extends JFrame implements ActionListener {
                 // System.out.println(st.getUsername() + " " + st.getFirstName() + " " + st.getLastName() + " " + st.getEmail() + " " + st.getStdId() + " " + st.getPhoneNumber() + " " + st.getPassword() + " ");
                 // Add student to our users
 
-                try (FileWriter fw = new FileWriter("users.csv", true);
+                if (st.isValidUsername() && st.isValidFirstName() && st.isValidLastName() && st.isValidEmail() && st.isValidId() && st.isValidPhone() && st.isValidPassword()) {
+                    try (FileWriter fw = new FileWriter("users.csv", true);
                     PrintWriter pw = new PrintWriter(fw)) {
 
-                    pw.println(un + "," + first + "," + last + "," + mail + "," + ID + "," + phoneNum + "," + pass + ",std");
-                    JOptionPane.showMessageDialog(this, "Student user signed up successfully!");
+                        pw.println(un + "," + first + "," + last + "," + mail + "," + ID + "," + phoneNum + "," + pass + ",std");
+                        JOptionPane.showMessageDialog(this, "Student user signed up successfully!");
 
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error saving user details.");
-                }
-
-                if (st.isValidUsername() && st.isValidFirstName() && st.isValidLastName() && st.isValidEmail() && st.isValidId() && st.isValidPhone() && st.isValidPassword()) {
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Error saving user details.");
+                    }
                     dispose();
                     new StudentHome(st);
                 } else {
@@ -187,18 +186,17 @@ public class SignUp extends JFrame implements ActionListener {
                 Teacher tc = new Teacher(un, first, last, mail, ID, phoneNum, pass);
                 // Add student to our users
 
-                try (FileWriter fw = new FileWriter("users.csv", true);
+                if (tc.isValidUsername() && tc.isValidFirstName() && tc.isValidLastName() && tc.isValidEmail() && tc.isValidId() && tc.isValidPhone() && tc.isValidPassword()) {
+                    try (FileWriter fw = new FileWriter("users.csv", true);
                     PrintWriter pw = new PrintWriter(fw)) {
 
-                    pw.println(un + "," + first + "," + last + "," + mail + "," + ID + "," + phoneNum + "," + pass + ",tc");
-                    JOptionPane.showMessageDialog(this, "Teacher user signed up successfully!");
+                        pw.println(un + "," + first + "," + last + "," + mail + "," + ID + "," + phoneNum + "," + pass + ",tc");
+                        JOptionPane.showMessageDialog(this, "Teacher user signed up successfully!");
                     
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error saving user details.");
-                }
-
-                if (tc.isValidUsername() && tc.isValidFirstName() && tc.isValidLastName() && tc.isValidEmail() && tc.isValidId() && tc.isValidPhone() && tc.isValidPassword()) {
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Error saving user details.");
+                    }
                     dispose();
                     new TeacherHome(tc);
                 } else {
@@ -211,18 +209,18 @@ public class SignUp extends JFrame implements ActionListener {
                 Employee em = new Employee(un, first, last, mail, ID, phoneNum, pass);
                 // Add student to our users
 
-                try (FileWriter fw = new FileWriter("users.csv", true);
+                if (em.isValidUsername() && em.isValidFirstName() && em.isValidLastName() && em.isValidEmail() && em.isValidId() && em.isValidPhone() && em.isValidPassword()) {
+                    
+                    try (FileWriter fw = new FileWriter("users.csv", true);
                     PrintWriter pw = new PrintWriter(fw)) {
 
-                    pw.println(un + "," + first + "," + last + "," + mail + "," + ID + "," + phoneNum + "," + pass + ",emp");
-                    JOptionPane.showMessageDialog(this, "Employee user signed up successfully!");
+                        pw.println(un + "," + first + "," + last + "," + mail + "," + ID + "," + phoneNum + "," + pass + ",emp");
+                        JOptionPane.showMessageDialog(this, "Employee user signed up successfully!");
                     
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Error saving user details.");
-                }
-
-                if (em.isValidUsername() && em.isValidFirstName() && em.isValidLastName() && em.isValidEmail() && em.isValidId() && em.isValidPhone() && em.isValidPassword()) {
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Error saving user details.");
+                    }
                     dispose();
                     new EmployeeHome(em);
                 } else {

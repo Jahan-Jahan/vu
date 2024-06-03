@@ -1,7 +1,5 @@
 import java.awt.event.*;
 import java.io.*;
-import java.time.Clock;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.*;
 import javax.swing.*;
@@ -33,6 +31,10 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     private JTextArea textAreaNews = new JTextArea(10, 30);
     private JButton textAreaSubmitBtnNews = new JButton("Submit");
     private Font font4 = new Font("MV Boli", Font.BOLD, 20);
+    
+    private JFrame textAreaHomeworkFrame = new JFrame("Add Text");
+    private JTextArea textAreaHomework = new JTextArea(10, 30);
+    private JButton textAreaSubmitBtnHomework = new JButton("Submit");
 
     private JButton changeRole = new JButton("Change!");
 
@@ -43,7 +45,7 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
 
     private Random random = new Random();
 
-    private JButton addStudentBtn = new JButton("Add STD");
+    private JButton addStudentBtn = new JButton("Add Student");
     private JFrame addStudentToLesson = new JFrame("Add student to lesson");
     private JLabel mainLabelAdd = new JLabel();
     private JTextField studentId = new JTextField();
@@ -56,42 +58,86 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     private HashMap<String, ArrayList<String>> map = new HashMap<>();
     private int h = 40;
 
-    private JButton showNewsBtn = new JButton("See news");
+    private JButton showNewsBtn = new JButton("See News");
     private JFrame showNewsFrame = new JFrame("News");
     private JTextArea showNewsTextArea = new JTextArea(10, 30);
     private JButton showNewsExitBtn = new JButton("OK!");
     
+    private JTextArea showHomeworkTextArea = new JTextArea(10, 30);
+
+    private JButton newsLimitStudentBtn = new JButton("See all student!");
+    
     public TeacherHome(Teacher t) {
 
         teacher = new Teacher(t.getUsername(), t.getFirstName(), t.getLastName(), t.getEmail(), t.getTeachId(), t.getPhoneNumber(), t.getPassword());
+
+        newsLimitStudentBtn.setBounds(35, 560, 230, 30);
+        newsLimitStudentBtn.setFont(font2);
+        newsLimitStudentBtn.setFocusable(false);
+        newsLimitStudentBtn.setBackground(greenBtnColor);
+        newsLimitStudentBtn.setForeground(foreColor);
+        newsLimitStudentBtn.addActionListener(this);
 
         addTextBtn.setBounds(10, 0, 130, 30);
         addTextBtn.setBackground(greenBtnColor);
         addTextBtn.setForeground(foreColor);
         addTextBtn.setFont(font3);
         addTextBtn.addActionListener(this);
-        
         textAreaNewsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         textAreaNewsFrame.setSize(400, 300);
         textAreaNewsFrame.setLocationRelativeTo(null);
-
         textAreaNews.setLineWrap(true);
         textAreaNews.setWrapStyleWord(true);
         textAreaNews.setFont(font4);
-
         textAreaSubmitBtnNews.setBackground(greenBtnColor);
         textAreaSubmitBtnNews.setForeground(foreColor);
         textAreaSubmitBtnNews.setFont(font4);
         textAreaSubmitBtnNews.addActionListener(this);
-
         textAreaNewsFrame.getContentPane().add(new JScrollPane(textAreaNews), BorderLayout.CENTER);
         textAreaNewsFrame.getContentPane().add(textAreaSubmitBtnNews, BorderLayout.SOUTH);
+
+        showNewsBtn.setBounds(35, 10, 230, 30);
+        showNewsBtn.setFont(font2);
+        showNewsBtn.setFocusable(false);
+        showNewsBtn.setBackground(greenBtnColor);
+        showNewsBtn.setForeground(foreColor);
+        showNewsBtn.addActionListener(this);
+        showNewsExitBtn.setFont(font2);
+        showNewsExitBtn.setFocusable(false);
+        showNewsExitBtn.setBackground(greenBtnColor);
+        showNewsExitBtn.setForeground(foreColor);
+        showNewsExitBtn.addActionListener(this);
+        showNewsTextArea.setFont(font3);
+        showNewsTextArea.setEditable(false);
+        showNewsTextArea.setForeground(foreColor);
+        showNewsTextArea.setLineWrap(true);
+        showNewsTextArea.setWrapStyleWord(true);
+        showNewsFrame.setSize(500, 500);
+        showNewsFrame.setLocationRelativeTo(null);
+        showNewsFrame.getContentPane().add(new JScrollPane(showNewsTextArea), BorderLayout.CENTER);
+        showNewsFrame.getContentPane().add(showNewsExitBtn, BorderLayout.SOUTH);
         
         addHomeworkBtn.setBounds(140, 0, 130, 30);
         addHomeworkBtn.setBackground(greenBtnColor);
         addHomeworkBtn.setForeground(foreColor);
         addHomeworkBtn.setFont(font3);
         addHomeworkBtn.addActionListener(this);
+        textAreaHomeworkFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        textAreaHomeworkFrame.setSize(400, 300);
+        textAreaHomeworkFrame.setLocationRelativeTo(null);
+        textAreaHomework.setLineWrap(true);
+        textAreaHomework.setWrapStyleWord(true);
+        textAreaHomework.setFont(font4);
+        textAreaSubmitBtnHomework.setBackground(greenBtnColor);
+        textAreaSubmitBtnHomework.setForeground(foreColor);
+        textAreaSubmitBtnHomework.setFont(font4);
+        textAreaSubmitBtnHomework.addActionListener(this);
+        textAreaHomeworkFrame.getContentPane().add(new JScrollPane(textAreaHomework), BorderLayout.CENTER);
+        textAreaHomeworkFrame.getContentPane().add(textAreaSubmitBtnHomework, BorderLayout.SOUTH);
+        showHomeworkTextArea.setLineWrap(true);
+        showHomeworkTextArea.setWrapStyleWord(true);    
+        showHomeworkTextArea.setFont(font4);
+        showHomeworkTextArea.setEditable(false);
         
         addQuizBtn.setBounds(10, 30, 130, 30);
         addQuizBtn.setBackground(greenBtnColor);
@@ -118,36 +164,13 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         whatIsUp.setForeground(foreColor);
         whatIsUp.addMouseListener(this);
 
-        showNewsBtn.setBounds(35, 10, 230, 30);
-        showNewsBtn.setFont(font2);
-        showNewsBtn.setFocusable(false);
-        showNewsBtn.setBackground(greenBtnColor);
-        showNewsBtn.setForeground(foreColor);
-        showNewsBtn.addActionListener(this);
-
-        showNewsExitBtn.setFont(font2);
-        showNewsExitBtn.setFocusable(false);
-        showNewsExitBtn.setBackground(greenBtnColor);
-        showNewsExitBtn.setForeground(foreColor);
-        showNewsExitBtn.addActionListener(this);
-
-        showNewsTextArea.setFont(font3);
-        showNewsTextArea.setEditable(false);
-        showNewsTextArea.setForeground(foreColor);
-        showNewsTextArea.setLineWrap(true);
-        showNewsTextArea.setWrapStyleWord(true);
-
-        showNewsFrame.setSize(500, 500);
-        showNewsFrame.setLocationRelativeTo(null);
-        showNewsFrame.getContentPane().add(new JScrollPane(showNewsTextArea), BorderLayout.CENTER);
-        showNewsFrame.getContentPane().add(showNewsExitBtn, BorderLayout.SOUTH);
-
         newsLabel.setBounds(25, 180, 300, 600);
         newsLabel.setBorder(BorderFactory.createLineBorder(borderColor, 2));
         // newsLabel.setBackground(Color.pink);
         // newsLabel.setOpaque(true);
         newsLabel.addMouseListener(this);
         newsLabel.add(showNewsBtn);
+        newsLabel.add(newsLimitStudentBtn);
 
         homeworkTextLabel.setBounds(580, 40, 400, 40);
         homeworkTextLabel.setFont(font2);
@@ -156,9 +179,11 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         
         homeWorkLabel.setBounds(375, 100, 800, 680);
         homeWorkLabel.setBorder(BorderFactory.createLineBorder(borderColor, 2));
+        homeWorkLabel.setLayout(new BorderLayout());
         // homeWorkLabel.setBackground(Color.pink);
         // homeWorkLabel.setOpaque(true);
         homeWorkLabel.addMouseListener(this);
+        homeWorkLabel.add(new JScrollPane(showHomeworkTextArea), BorderLayout.CENTER);
 
         quizTextLabel.setBounds(1250, 120, 250, 40);
         quizTextLabel.setFont(font2);
@@ -186,7 +211,7 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         changeRole.addActionListener(this);
 
         addStudentBtn.setBounds(180, 25, 150, 80);
-        addStudentBtn.setFont(font2);
+        addStudentBtn.setFont(new Font("MV Boli", Font.BOLD, 16));
         addStudentBtn.setBackground(greenBtnColor);
         addStudentBtn.setFocusable(false);
         addStudentBtn.addActionListener(this);
@@ -205,6 +230,8 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         submit.setFocusable(false);
         submit.addActionListener(this);
         
+        updateNews();
+        updateHomework();
         showStudent();
         revalidate();
 
@@ -264,29 +291,18 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         if (e.getSource() == addTextBtn) {
             textAreaNewsFrame.setVisible(true);
         }
+
         if (e.getSource() == textAreaSubmitBtnNews) {
             String text = textAreaNews.getText();
+
+            text.replace('\n', ' ');
 
             String fileName = "news.csv";
 
             try (FileWriter fw = new FileWriter(fileName, true);
              PrintWriter pw = new PrintWriter(fw)) {
                 
-                ZonedDateTime time = ZonedDateTime.now();
-                String year = String.valueOf(time.getYear());
-                String month = String.valueOf(time.getMonthValue());
-                String day = String.valueOf(time.getDayOfMonth());
-                String hour = String.valueOf(time.getHour());
-                String min = String.valueOf(time.getMinute());
-                String sec = String.valueOf(time.getSecond());
-
-                if (month.length() == 1) month = "0" + month;
-                if (day.length() == 1) day = "0" + day;
-                if (hour.length() == 1) hour = "0" + hour;
-                if (min.length() == 1) min = "0" + min;
-                if (sec.length() == 1) sec = "0" + sec;
-
-                String stringTime = year + "-" + month + "-" + day + " / " + hour + ":" + min + ":" + sec;
+                String stringTime = getTime();
                 
                 pw.println(teacher.getUsername() + "," + text + "," + stringTime);
                 
@@ -294,26 +310,120 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
                 ex.printStackTrace();
             }
 
+            showNewsTextArea.setText("");
+            updateNews();
+
             textAreaNews.setText("");
 
             textAreaNewsFrame.dispose();
         }
+
         if (e.getSource() == showNewsBtn) {
-            updateNews();
+            // updateNews();
             showNewsFrame.setVisible(true);
         }
+
         if (e.getSource() == showNewsExitBtn) {
             showNewsFrame.dispose();
         }
 
+        if (e.getSource() == textAreaSubmitBtnHomework) {
+            String text = textAreaHomework.getText();
+
+            text.replace('\n', ' ');
+
+            String fileName = "homework.csv";
+
+            try (FileWriter fw = new FileWriter(fileName, true);
+             PrintWriter pw = new PrintWriter(fw)) {
+
+                String stringTime = getTime();
+                
+                pw.println(teacher.getUsername() + "," + text + "," + stringTime);
+                
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            showHomeworkTextArea.setText("");
+            updateHomework();
+
+            textAreaHomework.setText("");
+
+            textAreaHomeworkFrame.dispose();
+        }
+
+        if (e.getSource() == addHomeworkBtn) {
+            // updateHomework();
+            textAreaHomeworkFrame.setVisible(true);
+        }
+
+        // add a textarea to see the HOMEWORK...
+
         if (e.getSource() == logOutBtn) {
             dispose();
+
             int response = JOptionPane.showConfirmDialog(this, "Are you done?", "Exit?", JOptionPane.YES_NO_OPTION);
+            
             if (response == JOptionPane.YES_OPTION) {
                 System.exit(0);
             } else if (response == JOptionPane.NO_OPTION) {
                 new Login();
             }
+        }
+
+        if (e.getSource() == newsLimitStudentBtn) {
+            JFrame frame = new JFrame("All Students");
+            JLabel mainLabel = new JLabel();
+            JTextArea textArea = new JTextArea(10, 20);
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            JButton okBtn = new JButton("OK!");
+
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.setFont(font2);
+            textArea.setEditable(false);
+            textArea.setForeground(foreColor);
+
+            okBtn.setForeground(foreColor);
+            okBtn.setBackground(greenBtnColor);
+            okBtn.setFocusable(false);
+            okBtn.setFont(font2);
+            okBtn.addActionListener((ActionEvent ev) -> {
+                frame.dispose();
+            });
+
+            String fileName = "studentsOf" + teacher.getUsername() + ".csv";
+
+            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+                
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    String[] details = line.split(",");
+
+                    String username = findUsernameById(details[0]);
+                    String less = details[1];
+
+                    textArea.setText(textArea.getText() + username + "," + less + "\n");
+                }
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            mainLabel.setBounds(0, 0, 400, 400);
+            mainLabel.setLayout(new BorderLayout());
+
+            mainLabel.add(scrollPane, BorderLayout.CENTER);
+            mainLabel.add(okBtn, BorderLayout.SOUTH);
+
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setSize(400, 400);
+            frame.setLocationRelativeTo(null);
+            frame.add(mainLabel);
+
+            frame.setVisible(true);
         }
     }
 
@@ -361,18 +471,28 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
             usernameLabel.setVisible(true);
             userButtonLabel.setVisible(false);
         }
-        // if (e.getSource() == newsLabel) {
-        //     newsLabel.setBorder(null);
+    }
 
-        // }
-        // if (e.getSource() == homeWorkLabel) {
-        //     homeWorkLabel.setBorder(null);
+    public String getTime() {
 
-        // }
-        // if (e.getSource() == quizLabel) {
-        //     quizLabel.setBorder(null);
+        ZonedDateTime time = ZonedDateTime.now();
 
-        // }
+        String year = String.valueOf(time.getYear());
+        String month = String.valueOf(time.getMonthValue());
+        String day = String.valueOf(time.getDayOfMonth());
+        String hour = String.valueOf(time.getHour());
+        String min = String.valueOf(time.getMinute());
+        String sec = String.valueOf(time.getSecond());
+
+        if (month.length() == 1) month = "0" + month;
+        if (day.length() == 1) day = "0" + day;
+        if (hour.length() == 1) hour = "0" + hour;
+        if (min.length() == 1) min = "0" + min;
+        if (sec.length() == 1) sec = "0" + sec;
+
+        String stringTime = year + "-" + month + "-" + day + " / " + hour + ":" + min + ":" + sec;
+
+        return stringTime;
     }
 
     public void updateNews() {
@@ -389,6 +509,27 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
                 String stringTime = details[2];
 
                 showNewsTextArea.setText(showNewsTextArea.getText() + username + " at " + stringTime + " said: " + text + "\n---------------\n");
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void updateHomework() {
+        try (BufferedReader br = new BufferedReader(new FileReader("homework.csv"))) {
+            
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                
+                String[] details = line.split(",");
+
+                String username = details[0];
+                String text = details[1];
+                String stringTime = details[2];
+
+                showHomeworkTextArea.setText(showHomeworkTextArea.getText() + username + " at " + stringTime + "\n" + text + "\n---------------\n");
             }
 
         } catch (IOException ex) {
@@ -521,12 +662,14 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
                             arrayListLesson.add(less);
                             map.put(id, arrayListLesson);
                         }
-                        JLabel studentToShow = new JLabel(stringToShow);
-                        studentToShow.setBounds(10, h + 10, 250, 25);
-                        studentToShow.setForeground(foreColor);
-                        studentToShow.setFont(new Font("MV Boli", Font.BOLD, 18));
-                        newsLabel.add(studentToShow);
-                        h += 35;
+                        if (h < 560) {
+                            JLabel studentToShow = new JLabel(stringToShow);
+                            studentToShow.setBounds(10, h + 10, 250, 25);
+                            studentToShow.setForeground(foreColor);
+                            studentToShow.setFont(new Font("MV Boli", Font.BOLD, 18));
+                            newsLabel.add(studentToShow);
+                            h += 35;
+                        }
                     }
                 }
             } catch (IOException ex) {

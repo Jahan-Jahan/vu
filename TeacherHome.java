@@ -32,7 +32,7 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     private JButton textAreaSubmitBtnNews = new JButton("Submit");
     private Font font4 = new Font("MV Boli", Font.BOLD, 20);
     
-    private JFrame textAreaHomeworkFrame = new JFrame("Add Text");
+    private JFrame textAreaHomeworkFrame = new JFrame("Add Homework");
     private JTextArea textAreaHomework = new JTextArea(10, 30);
     private JButton textAreaSubmitBtnHomework = new JButton("Submit");
 
@@ -114,7 +114,9 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     private JLabel addQuizLabel3;
     private int hQuiz = 0;
 
-    String quizFileName;
+    private String quizFileName;
+
+    private ArrayList<JLabel> quizLabels = new ArrayList<JLabel>();
             
     public TeacherHome(Teacher t) {
 
@@ -644,25 +646,36 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
                 if (hQuiz < 560) {
                     addQuizLabel1 = new JLabel("Descriptive Quiz " + quizCount1);
                     addQuizLabel1.setBounds(10, hQuiz + 10, 270, 40);
+                    addQuizLabel1.setForeground(foreColor);
                     addQuizLabel1.setFont(font2);
                     addQuizLabel1.addMouseListener(this);
                     quizLabel.add(addQuizLabel1);
                     hQuiz += 40;
+                    quizLabels.add(addQuizLabel1);
                 }
 
+                ArrayList<String> savedQuiz = new ArrayList<String>();
+
+                try (BufferedReader br = new BufferedReader(new FileReader(quizFileName))) {
+
+                    String line;
+
+                    while ((line = br.readLine()) != null) {
+                        savedQuiz.add(line);
+                    }
+                    
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                savedQuiz.add("DescriptiveQuiz" + quizCount1 + "Of" + teacher.getUsername() + ".csv");
+                
                 try (FileWriter fw = new FileWriter(quizFileName);
                 PrintWriter pw = new PrintWriter(fw)) {
 
-                    pw.println(quizCount1 + "," + quizCount2 + "," + quizCount3);
-                
-                } catch (IOException quizException) {
-                    quizException.printStackTrace();
-                }
-                
-                try (FileWriter fw = new FileWriter(quizFileName, true);
-                PrintWriter pw = new PrintWriter(fw)) {
-
-                    pw.println("DescriptiveQuiz" + quizCount1 + "Of" + teacher.getUsername() + ".csv");
+                    for (String line : savedQuiz) {
+                        pw.println(line);
+                    }
                 
                 } catch (IOException quizException) {
                     quizException.printStackTrace();
@@ -709,30 +722,41 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
                 if (hQuiz < 560) {
                     addQuizLabel2 = new JLabel("Choice Quiz " + quizCount2);
                     addQuizLabel2.setBounds(10, hQuiz + 10, 270, 40);
+                    addQuizLabel2.setForeground(foreColor);
                     addQuizLabel2.setFont(font2);
                     addQuizLabel2.addMouseListener(this);
                     quizLabel.add(addQuizLabel2);
                     hQuiz += 40;
+                    quizLabels.add(addQuizLabel2);
                 }
 
+                ArrayList<String> savedQuiz = new ArrayList<String>();
+
+                try (BufferedReader br = new BufferedReader(new FileReader(quizFileName))) {
+
+                    String line;
+
+                    while ((line = br.readLine()) != null) {
+                        savedQuiz.add(line);
+                    }
+                    
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                savedQuiz.add("ChoiceQuiz" + quizCount2 + "Of" + teacher.getUsername() + ".csv");
+                
                 try (FileWriter fw = new FileWriter(quizFileName);
                 PrintWriter pw = new PrintWriter(fw)) {
 
-                    pw.println(quizCount1 + "," + quizCount2 + "," + quizCount3);
+                    for (String line : savedQuiz) {
+                        pw.println(line);
+                    }
                 
                 } catch (IOException quizException) {
                     quizException.printStackTrace();
                 }
-                
-                try (FileWriter fw = new FileWriter(quizFileName, true);
-                PrintWriter pw = new PrintWriter(fw)) {
 
-                    pw.println("ChoiceQuiz" + quizCount2 + "Of" + teacher.getUsername() + ".csv");
-                
-                } catch (IOException quizException) {
-                    quizException.printStackTrace();
-                }
-                
                 quizCount2++;
             }
         }
@@ -767,39 +791,44 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
                 if (hQuiz < 560) {
                     addQuizLabel3 = new JLabel("True/False Quiz " + quizCount3);
                     addQuizLabel3.setBounds(10, hQuiz + 10, 270, 40);
+                    addQuizLabel3.setForeground(foreColor);
                     addQuizLabel3.setFont(font2);
                     addQuizLabel3.addMouseListener(this);
                     quizLabel.add(addQuizLabel3);
                     hQuiz += 40;
+                    quizLabels.add(addQuizLabel3);
                 }
 
+                ArrayList<String> savedQuiz = new ArrayList<String>();
+
+                try (BufferedReader br = new BufferedReader(new FileReader(quizFileName))) {
+
+                    String line;
+
+                    while ((line = br.readLine()) != null) {
+                        savedQuiz.add(line);
+                    }
+                    
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                savedQuiz.add("TFQuiz" + quizCount3 + "Of" + teacher.getUsername() + ".csv");
+                
                 try (FileWriter fw = new FileWriter(quizFileName);
                 PrintWriter pw = new PrintWriter(fw)) {
 
-                    pw.println(quizCount1 + "," + quizCount2 + "," + quizCount3);
-                
-                } catch (IOException quizException) {
-                    quizException.printStackTrace();
-                }
-                
-                try (FileWriter fw = new FileWriter(quizFileName, true);
-                PrintWriter pw = new PrintWriter(fw)) {
-
-                    pw.println("TFQuiz" + quizCount3 + "Of" + teacher.getUsername() + ".csv");
+                    for (String line : savedQuiz) {
+                        pw.println(line);
+                    }
                 
                 } catch (IOException quizException) {
                     quizException.printStackTrace();
                 }
 
                 quizCount3++;
-
-                // Add quiz labels
-
-
             }
         }
-
-        // add a textarea to see the HOMEWORK...
 
         if (e.getSource() == logOutBtn) {
             dispose();
@@ -979,7 +1008,13 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) { }
+    public void mouseClicked(MouseEvent e) {
+        // for (int i = 0; i < quizLabels.size(); i++) {
+        //     if (e.getSource() == quizLabels[i]) {
+                
+        //     }
+        // }
+    }
 
     @Override
     public void mousePressed(MouseEvent e) { }
@@ -1046,13 +1081,34 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
         return stringTime;
     }
 
+    public void updateQuiz() {
+
+        String fileName = "quizOf" + teacher.getUsername() + ".csv";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String[] details = line.split(",");
+
+
+                
+                // It is not complete!
+
+
+
+            }
+            
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
     public void updateNews() {
 
         String fileName = "news.csv";
-
-        File file = new File(fileName);
-
-        if (!file.exists()) return;
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             
@@ -1078,10 +1134,6 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
 
         String fileName = "homework.csv";
 
-        File file = new File(fileName);
-
-        if (!file.exists()) return;
-
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             
             String line;
@@ -1094,7 +1146,7 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
                 String text = details[1];
                 String stringTime = details[2];
 
-                showHomeworkTextArea.setText(showHomeworkTextArea.getText() + username + " at " + stringTime + "\n" + text + "\n---------------\n");
+                if (username.equals(teacher.getUsername())) showHomeworkTextArea.setText(showHomeworkTextArea.getText() + username + " at " + stringTime + "\n" + text + "\n---------------\n");
             }
 
         } catch (IOException ex) {
@@ -1116,34 +1168,40 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
 
         String fileName = "studentsOf" + teacher.getUsername() + ".csv";
 
-        File file = new File(fileName);
+        ArrayList<String> studentsOfThisTeacher = new ArrayList<String>();
 
-        ArrayList<String> teacherInfoWeHave = new ArrayList<String>();
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
 
-        if (file.exists()) {
-            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
 
-                String line;
-
-                while ((line = br.readLine()) != null) {
-                    String[] details = line.split(",");
-                    teacherInfoWeHave.add(details[0] + "," + details[1]);
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            while ((line = br.readLine()) != null) {
+                String[] details = line.split(",");
+                studentsOfThisTeacher.add(details[0] + "," + details[1]);
             }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
+        
 
-        if (!teacherInfoWeHave.contains(id + "," + lesson)) {
+        if (!studentsOfThisTeacher.contains(id + "," + lesson)) {
             try (FileWriter fw = new FileWriter("studentsOf" + teacher.getUsername() + ".csv", true);
                 PrintWriter pw = new PrintWriter(fw)) {
 
                 pw.println(stringToWrite);
+                newsLabel.revalidate();
                 JOptionPane.showMessageDialog(this, "Student has added successfully!");
 
             } catch (IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error saving user details.");
+            }
+
+            if (map.containsKey(id)) {
+                map.get(id).add(lesson);
+            } else {
+                ArrayList<String> arrayListLesson = new ArrayList<String>();
+                arrayListLesson.add(lesson);
+                map.put(id, arrayListLesson);
             }
         }
 
@@ -1156,35 +1214,50 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
             // ArrayList<String> allTeacherAndLesson = new ArrayList<String>();
 
             String readerFileName = "teachersOf" + findUsernameById(st) + ".csv";
-
-            file = new File(readerFileName);
             
             boolean s = true;
 
-            if (file.exists()) {
-                try (BufferedReader br = new BufferedReader(new FileReader(readerFileName))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(readerFileName))) {
 
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    
+                    String[] details = line.split(",");
+                    // System.out.println(findUsernameById(st.split(",")[0]));
+                    // System.out.println(details[0] + "  " + details[1]);
+
+                    if ((teacher.getUsername() + "," + lesson).equals(details[0] + "," + details[1])) {
+                        s = false;
+                        break;
+                    }
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            
+
+            if (s) {
+                ArrayList<String> everyLine = new ArrayList<String>();
+
+                try (BufferedReader br = new BufferedReader(new FileReader(readerFileName))) {
+                    
                     String line;
 
                     while ((line = br.readLine()) != null) {
-                        
-                        String[] details = line.split(",");
-                        // System.out.println(findUsernameById(st.split(",")[0]));
-                        // System.out.println(details[0] + "  " + details[1]);
-
-                        if ((teacher.getUsername() + "," + lesson).equals(details[0] + "," + details[1])) {
-                            s = false;
-                            break;
-                        }
+                        everyLine.add(line);
                     }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
 
-            if (s) {
+                } catch (IOException fileException) {
+                    fileException.printStackTrace();
+                }
+
                 try (FileWriter fw = new FileWriter(readerFileName);
                     PrintWriter pw = new PrintWriter(fw)) {
+
+                    for (String line : everyLine) {
+                        pw.println(line);
+                    }
 
                     for (String lessonOfMap : map.get(st)) {
                         pw.println(teacher.getUsername() + "," + lessonOfMap);
@@ -1204,42 +1277,31 @@ public class TeacherHome extends JFrame implements ActionListener, MouseListener
 
         String fileName = "studentsOf" + teacher.getUsername() + ".csv";
 
-        File file = new File(fileName);
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
 
-        if (file.exists()) {
-            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
 
-                String line;
-
-                while ((line = br.readLine()) != null) {
-                    String[] details = line.split(",");
-                    String id = details[0];
-                    String less = details[1];
-                    String username = findUsernameById(id);
-                    String stringToShow = username + "," + less;
-                    
-                    if (studentsWeShowing.contains(id + "," + less) == false) {
-                        studentsWeShowing.add(id + "," + less);
-                        if (map.containsKey(id)) {
-                            map.get(id).add(less);
-                        } else {
-                            ArrayList<String> arrayListLesson = new ArrayList<String>();
-                            arrayListLesson.add(less);
-                            map.put(id, arrayListLesson);
-                        }
-                        if (h < 560) {
-                            JLabel studentToShow = new JLabel(stringToShow);
-                            studentToShow.setBounds(10, h + 10, 250, 25);
-                            studentToShow.setForeground(foreColor);
-                            studentToShow.setFont(new Font("MV Boli", Font.BOLD, 18));
-                            newsLabel.add(studentToShow);
-                            h += 35;
-                        }
+            while ((line = br.readLine()) != null) {
+                String[] details = line.split(",");
+                String id = details[0];
+                String less = details[1];
+                String username = findUsernameById(id);
+                String stringToShow = username + "," + less;
+                
+                if (studentsWeShowing.contains(id + "," + less) == false) {
+                    studentsWeShowing.add(id + "," + less);
+                    if (h < 560) {
+                        JLabel studentToShow = new JLabel(stringToShow);
+                        studentToShow.setBounds(10, h + 10, 250, 25);
+                        studentToShow.setForeground(foreColor);
+                        studentToShow.setFont(new Font("MV Boli", Font.BOLD, 18));
+                        newsLabel.add(studentToShow);
+                        h += 35;
                     }
                 }
-            } catch (IOException ex) {
-                ex.printStackTrace();
             }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 

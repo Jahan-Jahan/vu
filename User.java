@@ -12,43 +12,43 @@ public abstract class User {
     protected String password = "";
 
     public boolean isValidUsername() {
-        if (username == "") return false;
+        if (username.equals("")) return false;
         return true;
     }
     public boolean isValidFirstName() {
-        if (firstName == "") return false;
+        if (firstName.equals("")) return false;
         return true;
     }
     public boolean isValidLastName() {
-        if (lastName == "") return false;
+        if (lastName.equals("")) return false;
         return true;
     }
     public boolean isValidEmail() {
-        if (email == "") return false;
+        if (email.equals("")) return false;
         return true;
     }
     public boolean isValidPhone() {
-        if (phoneNumber == "") return false;
+        if (phoneNumber.equals("")) return false;
         return true;
     }
     public boolean isValidPassword() {
-        if (password == "") return false;
+        if (password.equals("")) return false;
         return true;
     }
 
-    public void setFirstName(String firstName) {
-        Pattern pattern = Pattern.compile("[a-zA-Z]+");
-        Matcher matcher = pattern.matcher(firstName);
-        if (matcher.find() && firstName.length() <= 18) {
-            this.firstName = firstName;
+    public void setFirstName(String fn) {
+        Pattern pattern = Pattern.compile("[a-zA-Z]{1,18}");
+        Matcher matcher = pattern.matcher(fn);
+        if (matcher.find()) {
+            this.firstName = fn;
         }
     }
 
-    public void setUsername(String username) {
-        Pattern pattern = Pattern.compile("[a-zA-Z0-9]+");
-        Matcher matcher = pattern.matcher(username);
-        if (matcher.find() && username.length() >= 5 && username.length() <= 12) {
-            this.username = username;
+    public void setUsername(String un) {
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9]{5,12}");
+        Matcher matcher = pattern.matcher(un);
+        if (matcher.find()) {
+            this.username = un;
         }
     }
 
@@ -98,11 +98,11 @@ public abstract class User {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(String pass) {
         Pattern pattern = Pattern.compile("[a-zA-Z0-9]{8,12}");
-        Matcher matcher = pattern.matcher(password);
+        Matcher matcher = pattern.matcher(pass);
         if (matcher.find()) {
-            this.password = password;
+            this.password = pass;
         }
     }
 }

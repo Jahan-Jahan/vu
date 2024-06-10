@@ -20,7 +20,7 @@ public class Employee extends User {
     }
 
     public boolean isValidId() {
-        if (empId == "") return false;
+        if (empId.equals("")) return false;
         return true;
     }
 

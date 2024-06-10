@@ -20,7 +20,7 @@ public class Student extends User {
     }
     
     public boolean isValidId() {
-        if (stdId == "") return false;
+        if (stdId.equals("")) return false;
         return true;
     }
 
